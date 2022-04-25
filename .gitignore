@@ -1,0 +1,20 @@
+# Dependency directories
+node_modules/
+
+# Tarballs
+*.tgz
+
+# Output files
+*.d.ts
+*.js
+*.js.map
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# IDEs
+.idea
+.vscode
