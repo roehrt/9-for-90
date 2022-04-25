@@ -66,8 +66,8 @@ async function improve(journey: Journey, opt: JourneysOptions): Promise<Trick | 
   if (oldOrigin === undefined || oldDestination === undefined) return null;
 
   const legs = journey.legs.slice();
-  while (legs.length && (legs[0])) legs.shift();
-  while (legs.length && isRegionalProduct(legs[legs.length])) legs.pop();
+  while (legs.length && isRegionalProduct(legs[0])) legs.shift();
+  while (legs.length && isRegionalProduct(legs[legs.length - 1])) legs.pop();
 
   if (legs.length === 0) {
     return {
