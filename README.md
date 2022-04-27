@@ -7,3 +7,5 @@ From June on Germany offers a “9 for 90” ticket, which is primarily intended
 ## Downsides
 
 In case of delay of the regional traffic, one has then no right to compensation.
+
+**More soon.**
