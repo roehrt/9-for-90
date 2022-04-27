@@ -15,9 +15,9 @@ export type NineEuroStation = string;
  * Storing how the price saving was achieved
  */
 export interface Trick {
-  origin: NineEuroStation,
-  destination: NineEuroStation,
-  price: number,
+  prepend: Leg[],
+  append: Leg[],
+  oldPrice: number,
 }
 
 /**
@@ -59,21 +59,28 @@ const isRegionalProduct = ({ line }: Leg) => (
   line?.product && regionalProducts.includes(line?.product)
 );
 
-async function improve(journey: Journey, opt: JourneysOptions): Promise<Trick | null> {
+async function improve(journey: Journey, opt: JourneysOptions): Promise<CheaperJourney | null> {
+  if (journey?.price?.amount === undefined) return null;
+
   const oldOrigin = getOrigin(journey.legs);
   const oldDestination = getDestination(journey.legs);
 
   if (oldOrigin === undefined || oldDestination === undefined) return null;
 
   const legs = journey.legs.slice();
-  while (legs.length && isRegionalProduct(legs[0])) legs.shift();
-  while (legs.length && isRegionalProduct(legs[legs.length - 1])) legs.pop();
+  const prepend = [];
+  const append = [];
+  while (legs.length && isRegionalProduct(legs[0])) prepend.push(legs.shift() as Leg);
+  while (legs.length && isRegionalProduct(legs[legs.length - 1])) append.unshift(legs.pop() as Leg);
 
   if (legs.length === 0) {
     return {
-      origin: oldOrigin,
-      destination: oldOrigin,
-      price: 0,
+      ...journey,
+      trick: {
+        prepend,
+        append,
+        oldPrice: journey.price.amount,
+      },
     };
   }
 
@@ -99,20 +106,23 @@ async function improve(journey: Journey, opt: JourneysOptions): Promise<Trick | 
   if (improved?.price?.amount === undefined) return null;
 
   return {
-    origin: newOrigin,
-    destination: newDestination,
-    price: improved.price?.amount,
+    ...improved,
+    trick: {
+      prepend,
+      append,
+      oldPrice: improved.price.amount,
+    },
   };
 }
 
 /**
- * Finds cheaper prices for a given journey.
- *
- * @param {NineEuroStation} from - origin of journey
- * @param {NineEuroStation} to - destination of journey
- * @param {JourneysOptions} [opt] - journey options
- * @returns {Promise<CheaperJourney[]>}
- */
+   * Finds cheaper prices for a given journey.
+   *
+   * @param {NineEuroStation} from - origin of journey
+   * @param {NineEuroStation} to - destination of journey
+   * @param {JourneysOptions} [opt] - journey options
+   * @returns {Promise<CheaperJourney[]>}
+   */
 // eslint-disable-next-line import/prefer-default-export
 export async function findJourneys(
   from: NineEuroStation,
@@ -126,12 +136,9 @@ export async function findJourneys(
   const improveWithOpt = (journey: Journey) => improve(journey, opt);
   const improvedJourneys = await Promise.allSettled(originalJourneys.map(improveWithOpt));
 
-  return improvedJourneys.map((promise, idx) => {
-    const originalJourney = originalJourneys[idx];
-    if (promise.status === 'rejected' || promise.value === null) return originalJourney;
-    return {
-      ...originalJourney,
-      trick: promise.value,
-    };
-  });
+  return improvedJourneys.map((promise, idx) => (
+    (promise.status === 'rejected' || promise.value === null)
+      ? originalJourneys[idx]
+      : promise.value
+  ));
 }
