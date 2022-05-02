@@ -10,7 +10,10 @@ At the moment the "algorithm" is quite simple: just strip off the beginning and 
 
 ## Installation
 
-**[WIP]**
+As usual:
+```shell
+npm i @roehrt/9-for-90
+```
 
 ## API example
 
