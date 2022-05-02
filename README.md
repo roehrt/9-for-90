@@ -6,7 +6,7 @@ From June on Germany offers a “9 for 90” ticket, which is primarily intended
 
 ## How it works
 
-At the moment the "algorithm" is quite simple: just strip off the beginning and ending of the journey and check if this journey is cheaper - a smarter algorithm (using some kind of gathered graphs) is planned.
+At the moment the "algorithm" is quite simple: just strip off the beginning and ending of the journey and check if this journey is cheaper - a smarter algorithm (using some kind of gathered graphs) is planned. All the heavy-lifting is done by the great [`hafas-client`].
 
 ## Installation
 
@@ -24,7 +24,8 @@ findJourneys('8011160', '8010224').then((data) => {
 More information on how to use `findJourneys` can be found in the [`hafas-client`] docs:
 [`journeys`](https://github.com/public-transport/hafas-client/blob/master/docs/journeys.md)
 and `findJourneys` have the same signature and nearly the same return type and can therefore
-be used interchangeably. The only additional property that `findJourneys` return is an optional
+be used interchangeably. It returns an array of `Journeys` an `earlierRef` and `laterRef` can't be used.
+The only additional property that `findJourneys` return is an optional
 object `trick` storing how the price saving was achieved.
 
 ```typescript
@@ -51,3 +52,4 @@ In case of delay of the regional traffic, one has then no right to compensation.
 [`baahn`] - JavaScript client for finding special cheaper connections for Deutsche Bahn journeys.
 
 [`baahn`]: https://github.com/roehrt/baahn
+[`hafas-client`]: https://github.com/public-transport/hafas-client
