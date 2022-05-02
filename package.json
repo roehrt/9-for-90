@@ -1,5 +1,5 @@
 {
-  "name": "9-euro-ticket",
+  "name": "9-for-90",
   "version": "1.0.0",
   "description": "",
   "main": "src/index.js",
@@ -13,12 +13,15 @@
     "type": "git",
     "url": "git+https://github.com/roehrt/9-euro-ticket.git"
   },
+  "files": [
+    "src/"
+  ],
   "keywords": [
     "deutsche bahn",
     "transit",
     "germany"
   ],
-  "author": "Tobias Roehr",
+  "author": "roehrt",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/roehrt/9-euro-ticket/issues"
